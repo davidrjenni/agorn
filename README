@@ -1,0 +1,7 @@
+agorn - gorename for Acme
+
+agorn is a wrapper around gorename for use with Acme.
+Usage: execute 'agorn foo' to rename the entity under the cursor with foo.
+
+gorename is 'go gettable':
+% go get code.google.com/p/go.tools/cmd/gorename
