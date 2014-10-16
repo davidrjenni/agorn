@@ -134,7 +134,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, err.Error())
 		return
 	}
-	// fmt.Printf("gorename -offset %s:#%d -to %s", filename, offset, to)
 
 	win.win.Ctl("get")
 	win.showAddr(fmt.Sprintf("#%d", win.offset))
