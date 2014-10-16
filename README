@@ -1,8 +1,9 @@
-agorn - gorename for Acme
+# agorn - gorename for Acme #
 
 [![GoDoc](https://godoc.org/bitbucket.org/drj_/agorn?status.svg)](https://godoc.org/bitbucket.org/drj_/agorn)
 
-To use:
+## To use: ##
+
 ```
 #!bash
 
