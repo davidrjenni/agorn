@@ -15,6 +15,7 @@ gorename must be installed:
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -132,9 +133,12 @@ func main() {
 		fail(err)
 	}
 
-	err = exec.Command("gorename", "-offset", fmt.Sprintf("%s:#%d", win.name, win.offset), "-to", to).Run()
+	c := exec.Command("gorename", "-offset", fmt.Sprintf("%s:#%d", win.name, win.offset), "-to", to)
+	b := new(bytes.Buffer)
+	c.Stderr = b
+	err = c.Run()
 	if err != nil {
-		fail(err)
+		fail(fmt.Errorf(b.String()))
 	}
 
 	win.win.Ctl("get")
