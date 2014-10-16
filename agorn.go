@@ -101,7 +101,7 @@ func readBody(win *acme.Win) ([]byte, error) {
 
 func toByteOffset(b []byte, off int) int {
 	r := 0
-	for i, _ := range string(b) {
+	for i := range string(b) {
 		if r == off {
 			return i
 		}
