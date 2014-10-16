@@ -123,7 +123,7 @@ func fail(err error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail(fmt.Errorf("usage: agorn NAME\nReplaces the name under the cursor with NAME\n"))
+		fail(fmt.Errorf("usage: agorn [name]\n"))
 	}
 	to := os.Args[1]
 
