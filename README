@@ -1,7 +1,12 @@
 agorn - gorename for Acme
 
-agorn is a wrapper around gorename for use with Acme.
-Usage: execute 'agorn foo' to rename the entity under the cursor with foo.
+[![GoDoc](https://godoc.org/bitbucket.org/drj_/agorn?status.svg)](https://godoc.org/bitbucket.org/drj_/agorn)
 
-gorename is 'go gettable':
+To use:
+```
+#!bash
+
 % go get code.google.com/p/go.tools/cmd/gorename
+% go get bitbucket.org/drj_/agorn
+
+```
