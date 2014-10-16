@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strconv"
@@ -58,7 +59,41 @@ func currentWindow() (*window, error) {
 	if i == -1 {
 		return nil, fmt.Errorf("tag with no spaces")
 	}
-	return &window{win: win, name: tag[0:i], offset: q0}, nil
+	body, err := readBody(win)
+	if err != nil {
+		return nil, fmt.Errorf("cannot read body: %v", err)
+	}
+	return &window{win: win, name: tag[0:i], offset: toByteOffset(body, q0)}, nil
+}
+
+// We would use win.ReadAll except for a bug in acme
+// where it crashes when reading trying to read more
+// than the negotiated 9P message size.
+func readBody(win *acme.Win) ([]byte, error) {
+	var body []byte
+	buf := make([]byte, 8000)
+	for {
+		n, err := win.Read("body", buf)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		body = append(body, buf[0:n]...)
+	}
+	return body, nil
+}
+
+func toByteOffset(b []byte, off int) int {
+	r := 0
+	for i, _ := range string(b) {
+		if r == off {
+			return i
+		}
+		r++
+	}
+	return len(b)
 }
 
 func (w *window) showAddr(addr string) {
