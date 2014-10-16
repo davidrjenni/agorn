@@ -116,23 +116,25 @@ func (w *window) showAddr(addr string) {
 	w.win.Ctl("show")
 }
 
+func fail(err error) {
+	fmt.Fprintf(os.Stderr, "agorn: %v", err)
+	os.Exit(1)
+}
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage: agorn NAME\nReplaces the name under the cursor with NAME\n")
-		return
+		fail(fmt.Errorf("usage: agorn NAME\nReplaces the name under the cursor with NAME\n"))
 	}
 	to := os.Args[1]
 
 	win, err := currentWindow()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
-		return
+		fail(err)
 	}
 
 	err = exec.Command("gorename", "-offset", fmt.Sprintf("%s:#%d", win.name, win.offset), "-to", to).Run()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
-		return
+		fail(err)
 	}
 
 	win.win.Ctl("get")
