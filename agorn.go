@@ -1,3 +1,17 @@
+/*
+
+agorn is a wrapper around gorename for use with Acme.
+It renames the entity under the cursor.
+
+Usage:
+	agorn [name]
+
+Example:
+	'agorn Foo' renames the entity under the cursor with 'Foo'.
+
+gorename must be installed:
+	% go get code.google.com/p/go.tools/cmd/gorename
+*/
 package main
 
 import (
