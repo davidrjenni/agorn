@@ -9,7 +9,7 @@ agorn - gorename for Acme.
 ```
 #!bash
 
-% go get code.google.com/p/go.tools/cmd/gorename
+% go get golang.org/x/tools/cmd/gorename
 % go get bitbucket.org/drj_/agorn
 
 ```
