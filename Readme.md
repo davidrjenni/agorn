@@ -7,8 +7,6 @@ agorn - gorename for Acme.
 ## Installation ##
 
 ```
-#!bash
-
 % go get golang.org/x/tools/cmd/gorename
 % go get bitbucket.org/drj_/agorn
 
