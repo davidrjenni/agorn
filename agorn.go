@@ -10,7 +10,7 @@ Example:
 	'agorn Foo' renames the entity under the cursor with 'Foo'.
 
 gorename must be installed:
-	% go get code.google.com/p/go.tools/cmd/gorename
+	% go get golang.org/x/tools/cmd/gorename
 */
 package main
 
