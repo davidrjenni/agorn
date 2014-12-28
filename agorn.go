@@ -4,7 +4,7 @@ agorn is a wrapper around gorename for use with Acme.
 It renames the entity under the cursor.
 
 Usage:
-	agorn [name]
+	agorn name
 
 Example:
 	'agorn Foo' renames the entity under the cursor with 'Foo'.
@@ -124,7 +124,7 @@ func fail(err error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail(fmt.Errorf("usage: agorn [name]\n"))
+		fail(fmt.Errorf("usage: agorn name\n"))
 	}
 	to := os.Args[1]
 
