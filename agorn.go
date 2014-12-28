@@ -7,7 +7,8 @@ Usage:
 	agorn name
 
 Example:
-	'agorn Foo' renames the entity under the cursor with 'Foo'.
+	agorn Foo
+renames the entity under the cursor with 'Foo'.
 
 gorename must be installed:
 	% go get golang.org/x/tools/cmd/gorename
