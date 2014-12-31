@@ -40,19 +40,11 @@ type window struct {
 }
 
 func currentAcmeWin() (*acme.Win, error) {
-	winid := os.Getenv("winid")
-	if winid == "" {
-		return nil, fmt.Errorf("$winid not set - not running inside acme?")
-	}
-	id, err := strconv.Atoi(winid)
+	id, err := strconv.Atoi(os.Getenv("winid"))
 	if err != nil {
-		return nil, fmt.Errorf("invalid $winid %q", winid)
+		return nil, err
 	}
-	win, err := acme.Open(id, nil)
-	if err != nil {
-		return nil, fmt.Errorf("cannot open acme window: %v", err)
-	}
-	return win, nil
+	return acme.Open(id, nil)
 }
 
 func currentWindow() (*window, error) {
