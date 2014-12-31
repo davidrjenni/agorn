@@ -1,5 +1,4 @@
 /*
-
 agorn is a wrapper around gorename for use with Acme.
 It renames the entity under the cursor.
 
