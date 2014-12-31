@@ -16,6 +16,7 @@ gorename must be installed:
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -26,6 +27,12 @@ import (
 
 	"code.google.com/p/goplan9/plan9/acme"
 )
+
+type bodyReader struct{ *acme.Win }
+
+func (r bodyReader) Read(data []byte) (int, error) {
+	return r.Win.Read("body", data)
+}
 
 type window struct {
 	win    *acme.Win
@@ -75,41 +82,22 @@ func currentWindow() (*window, error) {
 	if i == -1 {
 		return nil, fmt.Errorf("tag with no spaces")
 	}
-	body, err := readBody(win)
+	off, err := byteOffset(bufio.NewReader(&bodyReader{win}), q0)
 	if err != nil {
 		return nil, fmt.Errorf("cannot read body: %v", err)
 	}
-	return &window{win: win, name: tag[0:i], offset: toByteOffset(body, q0)}, nil
+	return &window{win: win, name: tag[0:i], offset: off}, nil
 }
 
-// We would use win.ReadAll except for a bug in acme
-// where it crashes when reading trying to read more
-// than the negotiated 9P message size.
-func readBody(win *acme.Win) ([]byte, error) {
-	var body []byte
-	buf := make([]byte, 8000)
-	for {
-		n, err := win.Read("body", buf)
-		if err == io.EOF {
-			break
-		}
+func byteOffset(r io.RuneReader, off int) (bo int, err error) {
+	for i := 0; i != off; i++ {
+		_, s, err := r.ReadRune()
 		if err != nil {
-			return nil, err
+			return 0, err
 		}
-		body = append(body, buf[0:n]...)
+		bo += s
 	}
-	return body, nil
-}
-
-func toByteOffset(b []byte, off int) int {
-	r := 0
-	for i := range string(b) {
-		if r == off {
-			return i
-		}
-		r++
-	}
-	return len(b)
+	return
 }
 
 func (w *window) showAddr(addr string) {
