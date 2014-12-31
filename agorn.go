@@ -16,7 +16,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -33,12 +32,6 @@ func (r bodyReader) Read(data []byte) (int, error) {
 	return r.Win.Read("body", data)
 }
 
-type window struct {
-	win    *acme.Win
-	offset int
-	name   string
-}
-
 func openWin() (*acme.Win, error) {
 	id, err := strconv.Atoi(os.Getenv("winid"))
 	if err != nil {
@@ -47,37 +40,43 @@ func openWin() (*acme.Win, error) {
 	return acme.Open(id, nil)
 }
 
-func selection() (*window, error) {
-	win, err := openWin()
-	if err != nil {
-		return nil, err
+func readAddr(win *acme.Win) (q0, q1 int, err error) {
+	if _, _, err := win.ReadAddr(); err != nil {
+		return 0, 0, err
 	}
-	_, _, err = win.ReadAddr()
-	if err != nil {
-		return nil, fmt.Errorf("cannot read address: %v", err)
+	if err := win.Ctl("addr=dot"); err != nil {
+		return 0, 0, err
 	}
-	err = win.Ctl("addr=dot")
-	if err != nil {
-		return nil, fmt.Errorf("cannot set addr=dot: %v", err)
-	}
-	q0, _, err := win.ReadAddr()
-	if err != nil {
-		return nil, fmt.Errorf("cannot read address: %v", err)
-	}
+	return win.ReadAddr()
+}
+
+func readFilename(win *acme.Win) (string, error) {
 	b, err := win.ReadAll("tag")
 	if err != nil {
-		return nil, fmt.Errorf("cannot read tag: %v", err)
+		return "", err
 	}
 	tag := string(b)
 	i := strings.Index(tag, " ")
 	if i == -1 {
-		return nil, fmt.Errorf("tag with no spaces")
+		return "", fmt.Errorf("cannot get filename from tag")
 	}
-	off, err := byteOffset(bufio.NewReader(&bodyReader{win}), q0)
+	return tag[0:i], nil
+}
+
+func selection(win *acme.Win) (filename string, off int, err error) {
+	filename, err = readFilename(win)
 	if err != nil {
-		return nil, fmt.Errorf("cannot read body: %v", err)
+		return "", 0, err
 	}
-	return &window{win: win, name: tag[0:i], offset: off}, nil
+	q0, _, err := readAddr(win)
+	if err != nil {
+		return "", 0, err
+	}
+	off, err = byteOffset(bufio.NewReader(&bodyReader{win}), q0)
+	if err != nil {
+		return "", 0, err
+	}
+	return
 }
 
 func byteOffset(r io.RuneReader, off int) (bo int, err error) {
@@ -91,35 +90,41 @@ func byteOffset(r io.RuneReader, off int) (bo int, err error) {
 	return
 }
 
-func (w *window) showAddr(addr string) {
-	w.win.Fprintf("addr", addr)
-	w.win.Ctl("dot=addr\nshow")
-}
-
-func fail(err error) {
-	fmt.Fprintf(os.Stderr, "agorn: %v", err)
-	os.Exit(1)
+func reloadShowAddr(win *acme.Win, off int) error {
+	if err := win.Ctl("get"); err != nil {
+		return err
+	}
+	if err := win.Addr("#%d", off); err != nil {
+		return err
+	}
+	return win.Ctl("dot=addr\nshow")
 }
 
 func main() {
 	if len(os.Args) < 2 {
-		fail(fmt.Errorf("usage: agorn name\n"))
+		fmt.Fprintf(os.Stderr, "usage: agorn name\n")
+		os.Exit(1)
 	}
-	to := os.Args[1]
 
-	win, err := selection()
+	win, err := openWin()
 	if err != nil {
-		fail(err)
+		fmt.Fprintf(os.Stderr, "cannot open window: %v\n", err)
+		os.Exit(1)
 	}
 
-	c := exec.Command("gorename", "-offset", fmt.Sprintf("%s:#%d", win.name, win.offset), "-to", to)
-	b := new(bytes.Buffer)
-	c.Stderr = b
-	err = c.Run()
+	filename, off, err := selection(win)
 	if err != nil {
-		fail(fmt.Errorf(b.String()))
+		fmt.Fprintf(os.Stderr, "cannot get selection: %v\n", err)
+		os.Exit(1)
 	}
 
-	win.win.Ctl("get")
-	win.showAddr(fmt.Sprintf("#%d", win.offset))
+	c := exec.Command("gorename", "-offset", fmt.Sprintf("%s:#%d", filename, off), "-to", os.Args[1])
+	c.Stderr = os.Stderr
+	if err = c.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "rename failed: %v\n", err)
+		os.Exit(1)
+	}
+	if err := reloadShowAddr(win, off); err != nil {
+		fmt.Fprintf(os.Stderr, "cannot restore selection: %s\n", err)
+	}
 }
