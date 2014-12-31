@@ -126,5 +126,6 @@ func main() {
 	}
 	if err := reloadShowAddr(win, off); err != nil {
 		fmt.Fprintf(os.Stderr, "cannot restore selection: %s\n", err)
+		os.Exit(1)
 	}
 }
