@@ -39,7 +39,7 @@ type window struct {
 	name   string
 }
 
-func currentAcmeWin() (*acme.Win, error) {
+func openWin() (*acme.Win, error) {
 	id, err := strconv.Atoi(os.Getenv("winid"))
 	if err != nil {
 		return nil, err
@@ -47,8 +47,8 @@ func currentAcmeWin() (*acme.Win, error) {
 	return acme.Open(id, nil)
 }
 
-func currentWindow() (*window, error) {
-	win, err := currentAcmeWin()
+func selection() (*window, error) {
+	win, err := openWin()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func main() {
 	}
 	to := os.Args[1]
 
-	win, err := currentWindow()
+	win, err := selection()
 	if err != nil {
 		fail(err)
 	}
