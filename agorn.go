@@ -93,8 +93,7 @@ func byteOffset(r io.RuneReader, off int) (bo int, err error) {
 
 func (w *window) showAddr(addr string) {
 	w.win.Fprintf("addr", addr)
-	w.win.Ctl("dot=addr")
-	w.win.Ctl("show")
+	w.win.Ctl("dot=addr\nshow")
 }
 
 func fail(err error) {
