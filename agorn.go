@@ -3,7 +3,7 @@ agorn is a wrapper around gorename for use with Acme.
 It renames the entity under the cursor.
 
 Usage:
-	agorn name
+	agorn <name>
 
 Example:
 	agorn Foo
@@ -102,7 +102,7 @@ func reloadShowAddr(win *acme.Win, off int) error {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage: agorn name\n")
+		fmt.Fprintf(os.Stderr, "usage: agorn <name>\n")
 		os.Exit(1)
 	}
 
