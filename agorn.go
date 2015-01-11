@@ -102,7 +102,7 @@ func reloadShowAddr(win *acme.Win, off int) error {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage: agorn <name>\n")
+		fmt.Fprintf(os.Stderr, "Usage: agorn <name>\n")
 		os.Exit(1)
 	}
 
