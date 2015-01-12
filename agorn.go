@@ -23,7 +23,7 @@ import (
 	"strconv"
 	"strings"
 
-	"code.google.com/p/goplan9/plan9/acme"
+	"9fans.net/go/acme"
 )
 
 type bodyReader struct{ *acme.Win }
