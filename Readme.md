@@ -1,5 +1,5 @@
 [![Build Status](https://drone.io/github.com/davidrjenni/agorn/status.png)](https://drone.io/github.com/davidrjenni/agorn/latest)
-[![GoDoc](https://godoc.org/bitbucket.org/drj_/agorn?status.svg)](https://godoc.org/github.com/davidrjenni/agorn)
+[![GoDoc](https://godoc.org/github.com/davidrjenni/agorn?status.svg)](https://godoc.org/github.com/davidrjenni/agorn)
 
 # agorn
 
