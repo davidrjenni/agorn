@@ -1,7 +1,4 @@
-[![Build Status](https://drone.io/github.com/davidrjenni/agorn/status.png)](https://drone.io/github.com/davidrjenni/agorn/latest)
-[![GoDoc](https://godoc.org/github.com/davidrjenni/agorn?status.svg)](https://godoc.org/github.com/davidrjenni/agorn)
-
-# agorn
+# agorn [![Build Status](https://travis-ci.org/davidrjenni/agorn.svg?branch=master)](https://travis-ci.org/davidrjenni/agorn) [![GoDoc](https://godoc.org/github.com/davidrjenni/agorn?status.svg)](https://godoc.org/github.com/davidrjenni/agorn)
 
 agorn - gorename for Acme.
 
